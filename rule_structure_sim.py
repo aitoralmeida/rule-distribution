@@ -20,17 +20,17 @@ class RuleStructureSim:
         for key in self.stage_nodes.keys():
             if key != 0:
                 stage_nodes = self.stage_nodes[key]
-                prev_nodes = self.stage_nodes[key-1] #TODO add not only stage -1 but also range(key-1,0)
+                prev_nodes = self.stage_nodes[key-1] #TODO add not only stage -1 but also range(key-1,0,-1)
                 for node in stage_nodes:
                     for prev_node in prev_nodes:
                         if random.random() < prob_prev:
-                            self.nodes[node.id].sources = prev_node
-                            self.nodes[prev_node.id].targets = node
+                            self.nodes[node.id].sources.append(prev_node)
+                            self.nodes[prev_node.id].targets.append(node)
                     for node2 in stage_nodes:
                         if node.id != node2.id:
                             if random.random() < prob_same:
-                               self.nodes[node.id].sources = node2                            
-                               self.nodes[node2.id].targets = node
+                               self.nodes[node.id].sources.append(node2)                           
+                               self.nodes[node2.id].targets.append(node)
                     
                 
     
