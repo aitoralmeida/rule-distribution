@@ -9,17 +9,18 @@ import time
 import random
 
 class RuleStructureSim: 
-
-    rules = {}
-    stages = {}
-    nodes = {}
     
-    def create_simulation (self, stages = [5, 3, 2], prob_prev = 0.4, prob_same = 0.2, max_outcomes = 2):
+    def __init__(self):
+        self.rules = {}
+        self.stage_nodes = {}
+        self.nodes = {}
+    
+    def create_simulation (self, stages = [5, 3, 2], prob_prev = 1, prob_same = 1):
         self.create_concepts(stages)
-        for key in self.nodes.keys:
+        for key in self.stage_nodes.keys():
             if key != 0:
-                stage_nodes = stages[key]
-                prev_nodes = stages[key-1]
+                stage_nodes = self.stage_nodes[key]
+                prev_nodes = self.stage_nodes[key-1] #TODO add not only stage -1 but also range(key-1,0)
                 for node in stage_nodes:
                     for prev_node in prev_nodes:
                         if random.random() < prob_prev:
@@ -41,22 +42,19 @@ class RuleStructureSim:
                 n = Node()
                 stage_nodes.append(n)
                 self.nodes[n.id] = n
-            self.stages[i] = stage_nodes
+            self.stage_nodes[i] = stage_nodes
             i += 1 
     
     
 
-class Rule:
-    inputs = []
-    outputs = []
-    
+class Rule:   
     def __init__ (self, inputs, outputs):
         self.inputs = inputs
         self.outputs = outputs
         
-class Node:
-    targets = []
-    sources = []
-    
+class Node:    
     def __init__(self):
+        self.targets = []
+        self.sources = []
+        self.stage = -1
         self.id = str(time.time()) + str(random.random())
