@@ -29,9 +29,8 @@ class RuleStructureSim:
                     for node2 in stage_nodes:
                         if node.id != node2.id:
                             if random.random() < prob_same:
-                               self.nodes[node.id].sources.append(node2)                           
-                               self.nodes[node2.id].targets.append(node)
-                    
+                                self.nodes[node.id].sources.append(node2)                           
+                                self.nodes[node2.id].targets.append(node)                   
                 
     
     def create_concepts(self, stages):
@@ -39,7 +38,7 @@ class RuleStructureSim:
         for stage in stages:
             stage_nodes = []
             for e in range(0, stage):
-                n = Node()
+                n = Node(i)
                 stage_nodes.append(n)
                 self.nodes[n.id] = n
             self.stage_nodes[i] = stage_nodes
@@ -53,8 +52,8 @@ class Rule:
         self.outputs = outputs
         
 class Node:    
-    def __init__(self):
+    def __init__(self, stage = -1):
         self.targets = []
         self.sources = []
-        self.stage = -1
-        self.id = str(time.time()) + str(random.random())
+        self.stage = stage
+        self.id = 'stage-' + str(stage) + '-' + str(time.time()) + str(random.random())
