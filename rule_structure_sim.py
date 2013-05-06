@@ -7,6 +7,7 @@ Created on Fri May 03 09:47:24 2013
 
 import time
 import random
+#https://github.com/aitoralmeida/proteus-graph-exporter
 from proteus_graph import Graph
 
 class RuleStructureSim: 
@@ -33,7 +34,7 @@ class RuleStructureSim:
                             if random.random() < prob_same:
                                 self.nodes[node.id].sources.append(node2)                           
                                 self.nodes[node2.id].targets.append(node)                   
-                
+        self.create_graph()        
     
     def create_concepts(self, stages):
         i = 0;    
@@ -56,7 +57,9 @@ class RuleStructureSim:
             n = self.nodes[key]
             for target in n.targets:
                 self.graph.add_edge(n.id, target.id)
-
+                
+    def export_gml(self, filepath):
+        self.graph.export_graph_gml(filepath)
     
 
 class Rule:   
