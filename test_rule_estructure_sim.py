@@ -179,7 +179,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         
     def test_export_gml(self):
         sim = RuleStructureSim()
-        sim.create_simulation([300, 100, 75, 10], 0.3, 0.1)
+        sim.create_simulation([300, 100, 75, 10], 0.05, 0.001)
         
         sim.export_gml('./result.gml')
         

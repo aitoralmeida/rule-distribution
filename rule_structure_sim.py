@@ -23,7 +23,13 @@ class RuleStructureSim:
         for key in self.stage_nodes.keys():
             if key != 0:
                 stage_nodes = self.stage_nodes[key]
-                prev_nodes = self.stage_nodes[key-1] #TODO add not only stage -1 but also range(key-1,0,-1)
+                prev_nodes = []
+                i = key - 1
+                while i >= 0:
+                    for n in self.stage_nodes[i]:
+                        prev_nodes.append(n)
+                    i = i -1
+                
                 for node in stage_nodes:
                     for prev_node in prev_nodes:
                         if random.random() < prob_prev:
@@ -51,7 +57,7 @@ class RuleStructureSim:
         self.graph = Graph(directed = True)
         for key in self.nodes:
             n = self.nodes[key]
-            self.graph.add_node(n.id)
+            self.graph.add_node(id = n.id, label = 'stage' + str(n.stage))
         
         for key in self.nodes:
             n = self.nodes[key]
