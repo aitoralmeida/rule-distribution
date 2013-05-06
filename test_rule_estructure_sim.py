@@ -170,8 +170,13 @@ class TestRuleEstructureSim(unittest.TestCase):
         self.assertEquals(node_B_stage_2.sources[0].id, node_A_stage_2.id)
         self.assertEquals(node_B_stage_2.targets[0].id, node_A_stage_2.id)   
 
-                
-              
+    def test_create_graph(self):     
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 1)
+        sim.create_graph()
+        
+        self.assertEquals(6, len(sim.graph.nodes))
+        self.assertEquals(4, len(sim.graph.edges))     
         
         
 if __name__ == '__main__':

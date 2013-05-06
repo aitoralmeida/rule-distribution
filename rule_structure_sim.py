@@ -7,6 +7,7 @@ Created on Fri May 03 09:47:24 2013
 
 import time
 import random
+from proteus_graph import Graph
 
 class RuleStructureSim: 
     
@@ -14,8 +15,9 @@ class RuleStructureSim:
         self.rules = {}
         self.stage_nodes = {}
         self.nodes = {}
+        self.graph = Graph()
     
-    def create_simulation (self, stages = [5, 3, 2], prob_prev = 1, prob_same = 1):
+    def create_simulation (self, stages = [3, 2, 1], prob_prev = 1, prob_same = 1):
         self.create_concepts(stages)
         for key in self.stage_nodes.keys():
             if key != 0:
@@ -44,6 +46,17 @@ class RuleStructureSim:
             self.stage_nodes[i] = stage_nodes
             i += 1 
     
+    def create_graph(self):
+        self.graph = Graph(directed = True)
+        for key in self.nodes:
+            n = self.nodes[key]
+            self.graph.add_node(n.id)
+        
+        for key in self.nodes:
+            n = self.nodes[key]
+            for target in n.targets:
+                self.graph.add_edge(n.id, target.id)
+
     
 
 class Rule:   
