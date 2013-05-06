@@ -173,10 +173,15 @@ class TestRuleEstructureSim(unittest.TestCase):
     def test_create_graph(self):     
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 0, 1)
-        sim.create_graph()
         
         self.assertEquals(6, len(sim.graph.nodes))
         self.assertEquals(4, len(sim.graph.edges))     
+        
+    def test_export_gml(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([300, 100, 75, 10], 0.3, 0.1)
+        
+        sim.export_gml('./result.gml')
         
         
 if __name__ == '__main__':
