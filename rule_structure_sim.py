@@ -41,7 +41,7 @@ class RuleStructureSim:
                                 self.nodes[node.id].sources.append(node2)                           
                                 self.nodes[node2.id].targets.append(node)                   
         if prune:
-            while len(self.prune_non_consecuential()) != 0:
+            while len(self.prune_non_consecuential()) > 0:
                 pass
             
         self.create_graph()        
@@ -137,5 +137,10 @@ class Node:
         self.sources = []
         self.stage = stage
         self.id = 'stage-' + str(stage) + '-' + str(time.time()) + str(random.random())
+        
+if __name__ == "__main__":
+    sim = RuleStructureSim()
+    sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)    
+    sim.export_gml('./result.gml')
         
         

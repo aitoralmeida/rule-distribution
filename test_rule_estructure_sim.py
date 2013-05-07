@@ -341,11 +341,11 @@ class TestRuleEstructureSim(unittest.TestCase):
         for node in all_nodes:
             self.assertNotEquals(0, len(node.targets))
     
-    def test_export_gml_create(self):
-        sim = RuleStructureSim()
-        sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)
-        
-        sim.export_gml('./result.gml')
+#    def test_export_gml_create(self):
+#        sim = RuleStructureSim()
+#        sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)
+#        
+#        sim.export_gml('./result.gml')
         
 if __name__ == '__main__':
     unittest.main()
