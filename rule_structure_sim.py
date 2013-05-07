@@ -18,7 +18,7 @@ class RuleStructureSim:
         self.nodes = {}
         self.graph = Graph()
     
-    def create_simulation (self, stages = [3, 2, 1], prob_prev = 1, prob_same = 1):
+    def create_simulation (self, stages = [3, 2, 1], prob_prev = 1, prob_same = 1, prune = True):
         self.create_concepts(stages)
         for key in self.stage_nodes.keys():
             if key != 0:
@@ -40,7 +40,8 @@ class RuleStructureSim:
                             if random.random() < prob_same:
                                 self.nodes[node.id].sources.append(node2)                           
                                 self.nodes[node2.id].targets.append(node)                   
-        #self.prune_non_consecuential()
+        if prune:
+            self.prune_non_consecuential()
         self.create_graph()        
     
     def create_concepts(self, stages):
@@ -56,12 +57,12 @@ class RuleStructureSim:
             
     def prune_non_consecuential(self):
         num_stages = len(self.stage_nodes.keys())
+        nodes_to_disintegrate = []
         for key in range(num_stages-2, -1, -1): #last stage can't be non-consecuential
             for node in self.stage_nodes[key]:
                 # Node has no targets, disintegrate
                 if len(self.nodes[node.id].targets) == 0:
-                    self.disintegrate_node(node.id)
-                    print 'Disintegrating ' + str(node.id)
+                    nodes_to_disintegrate.append(node.id)
                 # do the targets lead to the next stage?
                 else:
                     if not self.check_next_stage(node.id): 
@@ -71,9 +72,11 @@ class RuleStructureSim:
                         for t in node.targets:
                             if self.check_next_stage(t.id):
                                 leads_to_next_stage = True
-                                break
                         if not leads_to_next_stage:
-                            self.disintegrate_node(node.id)
+                            nodes_to_disintegrate.append(node.id)
+        
+        for node_id in nodes_to_disintegrate:
+            self.disintegrate_node(node_id)
                         
                             
     
@@ -84,11 +87,10 @@ class RuleStructureSim:
         for t in targets:
             if self.nodes[t.id].stage > self.nodes[id].stage:
                 to_next_stage = True
-                break
-        return to_next_stage
-                        
-                    
-                    
+                break            
+        return to_next_stage         
+    
+    #delete a node and all its references                
     def disintegrate_node(self, id):
         self.nodes.pop(id)
         for node in self.nodes.values():

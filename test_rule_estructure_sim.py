@@ -106,14 +106,14 @@ class TestRuleEstructureSim(unittest.TestCase):
      # inter-stage prob 0, intra-stage prob 1
     def test_create_simulation_prob_0_1(self):
         sim = RuleStructureSim()
-        sim.create_simulation([2,2,2], 0, 1)
+        sim.create_simulation([2,2,2], 0, 1, False)
         
         # concepts created correctly?
-        self.assertEquals(2, len(sim.nodes))        
-        self.assertEquals(len(sim.stage_nodes), 3)
-        self.assertEquals(len(sim.stage_nodes[0]), 2)
-        self.assertEquals(len(sim.stage_nodes[1]), 2)
-        self.assertEquals(len(sim.stage_nodes[2]), 2)
+        self.assertEquals(2+2+2, len(sim.nodes))        
+        self.assertEquals(3, len(sim.stage_nodes))
+        self.assertEquals(2, len(sim.stage_nodes[0]))
+        self.assertEquals(2, len(sim.stage_nodes[1]))
+        self.assertEquals(2, len(sim.stage_nodes[2]))
         
         stage_0_keys = [node.id for node in sim.stage_nodes[0]]
         stage_1_keys = [node.id for node in sim.stage_nodes[1]]
@@ -173,9 +173,9 @@ class TestRuleEstructureSim(unittest.TestCase):
 
     def test_create_graph(self):     
         sim = RuleStructureSim()
-        sim.create_simulation([2,2,2], 0, 1)
+        sim.create_simulation([2,2,2], 0, 1, False)
         
-        self.assertEquals(2, len(sim.graph.nodes))
+        self.assertEquals(2+2+2, len(sim.graph.nodes))
         self.assertEquals(4, len(sim.graph.edges))  
         sim.export_gml('./test2.gml')
         
@@ -187,7 +187,7 @@ class TestRuleEstructureSim(unittest.TestCase):
     
     def test_check_next_stage_false(self):     
         sim = RuleStructureSim()
-        sim.create_simulation([2,2,2], 0, 1)  
+        sim.create_simulation([2,2,2], 0, 1, False)  
         stage_0_id = sim.stage_nodes[0][0].id
         self.assertFalse(sim.check_next_stage(sim.nodes[stage_0_id].id))
     
@@ -235,12 +235,70 @@ class TestRuleEstructureSim(unittest.TestCase):
         
         sim.export_gml('./result.gml')
         
-#    def test_prune_non_consecuential(self):
-#        sim = RuleStructureSim()
-#        sim.create_simulation([2,2,2], 1, 1)
-#        
-#        sim.prune_non_consecuential()
+    def test_prune_non_consecuential_1(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([1,1,1], 0, 1, False)
         
+        stage_0_nodes = sim.stage_nodes[0]    
+        stage_1_nodes = sim.stage_nodes[1]    
+        
+        sim.prune_non_consecuential()
+        
+        for n in stage_0_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+        for n in stage_1_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+
+        self.assertEquals(0, len(sim.stage_nodes[0]))
+        self.assertEquals(0, len(sim.stage_nodes[1]))
+        self.assertEquals(1, len(sim.stage_nodes[2]))
+        
+    def test_prune_non_consecuential_2(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 0, False)
+        
+        stage_0_nodes = sim.stage_nodes[0]    
+        stage_1_nodes = sim.stage_nodes[1]    
+        
+        sim.prune_non_consecuential()
+        
+        for n in stage_0_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+        for n in stage_1_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+
+        self.assertEquals(0, len(sim.stage_nodes[0]))
+        self.assertEquals(0, len(sim.stage_nodes[1]))
+        self.assertEquals(2, len(sim.stage_nodes[2]))
+        
+    def test_prune_non_consecuential_3(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 1, False)
+        
+        stage_0_nodes = sim.stage_nodes[0]    
+        stage_1_nodes = sim.stage_nodes[1]    
+        
+        sim.prune_non_consecuential()
+        
+        for n in stage_0_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+        for n in stage_1_nodes:
+            self.assertFalse(n in sim.nodes.keys())
+        
+        self.assertEquals(0, len(sim.stage_nodes[0]))
+        self.assertEquals(0, len(sim.stage_nodes[1]))
+        self.assertEquals(2, len(sim.stage_nodes[2]))
+        
+    def test_prune_non_consecuential_4(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 1, 1, False)
+        
+        sim.prune_non_consecuential()
+        
+        self.assertEquals(2, len(sim.stage_nodes[0]))
+        self.assertEquals(2, len(sim.stage_nodes[1]))
+        self.assertEquals(2, len(sim.stage_nodes[2]))
+        self.assertEquals(2+2+2, len(sim.nodes))
         
 if __name__ == '__main__':
     unittest.main()
