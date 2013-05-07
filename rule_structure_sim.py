@@ -40,6 +40,7 @@ class RuleStructureSim:
                             if random.random() < prob_same:
                                 self.nodes[node.id].sources.append(node2)                           
                                 self.nodes[node2.id].targets.append(node)                   
+        #self.prune_non_consecuential()
         self.create_graph()        
     
     def create_concepts(self, stages):
@@ -52,7 +53,53 @@ class RuleStructureSim:
                 self.nodes[n.id] = n
             self.stage_nodes[i] = stage_nodes
             i += 1 
+            
+    def prune_non_consecuential(self):
+        num_stages = len(self.stage_nodes.keys())
+        for key in range(num_stages-2, -1, -1): #last stage can't be non-consecuential
+            for node in self.stage_nodes[key]:
+                if len(self.nodes[node.id].targets) == 0:
+                    self.disintegrate_node(node.id)
+                    print 'Disintegrating ' + str(node.id)
+                else: #check if the targets lead to the next stage
+                    targets = self.nodes[node.id].targets
+                    to_next_stage = False
+                    for t in targets:
+                        if self.nodes[t].stage > self.nodes[node.id]:
+                            to_next_stage = True
+                            break
+                    if not to_next_stage: 
+                        #check if one of the same stage targets go to the next
+                        #stage
+                        for t in targets:
+                            pass
+                            
     
+    #checks if the node leads to the next stage    
+    def check_next_stage(self, id):
+        targets = self.nodes[id].targets
+        to_next_stage = False
+        for t in targets:
+            if self.nodes[t.id].stage > self.nodes[id].stage:
+                to_next_stage = True
+                break
+        return to_next_stage
+                        
+                    
+                    
+    def disintegrate_node(self, id):
+        self.nodes.pop(id)
+        for node in self.nodes.values():
+            if id in node.targets:
+                node.targets.remove(id)
+            if id in node.sources:
+                node.sources.remove(id)
+        
+        for nodes in self.stage_nodes.values():
+            if id in nodes:
+                nodes.remove(id)                      
+    
+    # creates the proteus-graph Graph()        
     def create_graph(self):
         self.graph = Graph(directed = True)
         for key in self.nodes:
@@ -79,3 +126,5 @@ class Node:
         self.sources = []
         self.stage = stage
         self.id = 'stage-' + str(stage) + '-' + str(time.time()) + str(random.random())
+        
+        

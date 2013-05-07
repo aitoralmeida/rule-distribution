@@ -7,6 +7,7 @@ Created on Fri May 03 10:48:35 2013
 
 import unittest
 from rule_structure_sim import RuleStructureSim
+from proteus_graph import Graph
 
 class TestRuleEstructureSim(unittest.TestCase):
     
@@ -108,7 +109,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim.create_simulation([2,2,2], 0, 1)
         
         # concepts created correctly?
-        self.assertEquals(len(sim.nodes), 2+2+2)        
+        self.assertEquals(2, len(sim.nodes))        
         self.assertEquals(len(sim.stage_nodes), 3)
         self.assertEquals(len(sim.stage_nodes[0]), 2)
         self.assertEquals(len(sim.stage_nodes[1]), 2)
@@ -174,14 +175,43 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 0, 1)
         
-        self.assertEquals(6, len(sim.graph.nodes))
-        self.assertEquals(4, len(sim.graph.edges))     
+        self.assertEquals(2, len(sim.graph.nodes))
+        self.assertEquals(4, len(sim.graph.edges))  
+        sim.export_gml('./test2.gml')
+        
+    def test_check_next_stage_true(self):     
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 1, 0)    
+        stage_0_id = sim.stage_nodes[0][0].id
+        self.assertTrue(sim.check_next_stage(sim.nodes[stage_0_id].id))
+    
+    def test_check_next_stage_false(self):     
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 1)  
+        stage_0_id = sim.stage_nodes[0][0].id
+        self.assertFalse(sim.check_next_stage(sim.nodes[stage_0_id].id))
         
     def test_export_gml(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([1, 1], 1, 0)        
+        sim.export_gml('./test.gml')
+
+        g = Graph()
+        g.import_graph_gml('./test.gml')
+        self.assertEquals(2, len(g.nodes))
+        self.assertEquals(1, len(g.edges))
+    
+    def test_export_gml_create(self):
         sim = RuleStructureSim()
         sim.create_simulation([300, 100, 75, 10], 0.05, 0.001)
         
         sim.export_gml('./result.gml')
+        
+#    def test_prune_non_consecuential(self):
+#        sim = RuleStructureSim()
+#        sim.create_simulation([2,2,2], 1, 1)
+#        
+#        sim.prune_non_consecuential()
         
         
 if __name__ == '__main__':
