@@ -190,6 +190,34 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim.create_simulation([2,2,2], 0, 1)  
         stage_0_id = sim.stage_nodes[0][0].id
         self.assertFalse(sim.check_next_stage(sim.nodes[stage_0_id].id))
+    
+    def test_disintegrate_node(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([1], 1, 1)  
+        
+        self.assertEquals(1, len(sim.nodes))
+        self.assertEquals(1, len(sim.stage_nodes[0]))
+        
+        sim.disintegrate_node(sim.nodes.values()[0].id)
+        
+        self.assertEquals(0, len(sim.nodes))
+        self.assertEquals(0, len(sim.stage_nodes[0]))
+        
+    def test_disintegrate_node_2(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([1, 1], 1, 1)  
+        stage_0_id = sim.stage_nodes[0][0].id
+        
+        self.assertEquals(2, len(sim.nodes))
+        self.assertEquals(1, len(sim.stage_nodes[0]))
+        self.assertEquals(1, len(sim.stage_nodes[1]))
+        
+        sim.disintegrate_node(stage_0_id)
+        
+        self.assertEquals(1, len(sim.nodes))
+        self.assertEquals(0, len(sim.stage_nodes[0]))
+        self.assertEquals(1, len(sim.stage_nodes[1]))
+        self.assertFalse(sim.nodes.values()[0].id == stage_0_id)
         
     def test_export_gml(self):
         sim = RuleStructureSim()

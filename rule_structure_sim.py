@@ -58,21 +58,23 @@ class RuleStructureSim:
         num_stages = len(self.stage_nodes.keys())
         for key in range(num_stages-2, -1, -1): #last stage can't be non-consecuential
             for node in self.stage_nodes[key]:
+                # Node has no targets, disintegrate
                 if len(self.nodes[node.id].targets) == 0:
                     self.disintegrate_node(node.id)
                     print 'Disintegrating ' + str(node.id)
-                else: #check if the targets lead to the next stage
-                    targets = self.nodes[node.id].targets
-                    to_next_stage = False
-                    for t in targets:
-                        if self.nodes[t].stage > self.nodes[node.id]:
-                            to_next_stage = True
-                            break
-                    if not to_next_stage: 
+                # do the targets lead to the next stage?
+                else:
+                    if not self.check_next_stage(node.id): 
                         #check if one of the same stage targets go to the next
                         #stage
-                        for t in targets:
-                            pass
+                        leads_to_next_stage = False
+                        for t in node.targets:
+                            if self.check_next_stage(t.id):
+                                leads_to_next_stage = True
+                                break
+                        if not leads_to_next_stage:
+                            self.disintegrate_node(node.id)
+                        
                             
     
     #checks if the node leads to the next stage    
@@ -91,13 +93,14 @@ class RuleStructureSim:
         self.nodes.pop(id)
         for node in self.nodes.values():
             if id in node.targets:
-                node.targets.remove(id)
+                self.nodes[node.id].targets.remove(id)
             if id in node.sources:
-                node.sources.remove(id)
+                self.nodes[node.id].sources.remove(id)
         
-        for nodes in self.stage_nodes.values():
-            if id in nodes:
-                nodes.remove(id)                      
+        for stage in self.stage_nodes:
+            for n in self.stage_nodes[stage]:
+                if id == n.id:                 
+                    self.stage_nodes[stage].remove(n)                   
     
     # creates the proteus-graph Graph()        
     def create_graph(self):
