@@ -42,6 +42,7 @@ class RuleStructureSim:
                                 self.nodes[node2.id].targets.append(node)                   
         if prune:
             self.prune_non_consecuential()
+            
         self.create_graph()        
     
     def create_concepts(self, stages):
@@ -77,6 +78,8 @@ class RuleStructureSim:
         
         for node_id in nodes_to_disintegrate:
             self.disintegrate_node(node_id)
+            
+        return nodes_to_disintegrate
                         
                             
     
@@ -94,10 +97,12 @@ class RuleStructureSim:
     def disintegrate_node(self, id):
         self.nodes.pop(id)
         for node in self.nodes.values():
-            if id in node.targets:
-                self.nodes[node.id].targets.remove(id)
-            if id in node.sources:
-                self.nodes[node.id].sources.remove(id)
+            for target in node.targets:
+                if id == target.id:
+                    self.nodes[node.id].targets.remove(target)
+            for source in node.sources:
+                if id == source.id:
+                    self.nodes[node.id].sources.remove(source)               
         
         for stage in self.stage_nodes:
             for n in self.stage_nodes[stage]:
