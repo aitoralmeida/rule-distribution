@@ -259,9 +259,9 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim.prune_non_consecuential()
         
         for n in stage_0_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
         for n in stage_1_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
 
         self.assertEquals(0, len(sim.stage_nodes[0]))
         self.assertEquals(0, len(sim.stage_nodes[1]))
@@ -277,9 +277,9 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim.prune_non_consecuential()
         
         for n in stage_0_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
         for n in stage_1_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
 
         self.assertEquals(0, len(sim.stage_nodes[0]))
         self.assertEquals(0, len(sim.stage_nodes[1]))
@@ -295,9 +295,9 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim.prune_non_consecuential()
         
         for n in stage_0_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
         for n in stage_1_nodes:
-            self.assertFalse(n in sim.nodes.keys())
+            self.assertFalse(n.id in sim.nodes.keys())
         
         self.assertEquals(0, len(sim.stage_nodes[0]))
         self.assertEquals(0, len(sim.stage_nodes[1]))
@@ -327,6 +327,19 @@ class TestRuleEstructureSim(unittest.TestCase):
                     self.assertFalse(node_id == t.id)
                 for s in node.sources:
                     self.assertFalse(node_id == s.id)
+    
+    def test_prune_non_consecuential_check_0_targets(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)    
+        
+        stage_0 = [n for n in sim.stage_nodes[0]]
+        stage_1 = [n for n in sim.stage_nodes[1]]
+        stage_2 = [n for n in sim.stage_nodes[2]]
+        
+        all_nodes = stage_0 + stage_1 + stage_2
+        
+        for node in all_nodes:
+            self.assertNotEquals(0, len(node.targets))
     
     def test_export_gml_create(self):
         sim = RuleStructureSim()

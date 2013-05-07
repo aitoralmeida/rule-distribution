@@ -41,7 +41,8 @@ class RuleStructureSim:
                                 self.nodes[node.id].sources.append(node2)                           
                                 self.nodes[node2.id].targets.append(node)                   
         if prune:
-            self.prune_non_consecuential()
+            while len(self.prune_non_consecuential()) != 0:
+                pass
             
         self.create_graph()        
     
