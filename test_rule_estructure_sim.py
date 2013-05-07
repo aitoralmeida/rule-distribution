@@ -314,7 +314,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         self.assertEquals(2, len(sim.stage_nodes[2]))
         self.assertEquals(2+2+2, len(sim.nodes))
         
-    def test_prune_non_consecuential_check_dissintegration(self):
+    def test_prune_non_consecuential_check_disintegration(self):
         sim = RuleStructureSim()
         sim.create_simulation([1000,500,20], 0.01, 0.1, False)
         
