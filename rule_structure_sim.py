@@ -174,7 +174,11 @@ class RuleStructureSim:
                     #undirected
                     for rule1_input in rule1.inputs:
                         if rule1_input in rule2.inputs:
-                            self.rule_undirected_graph.add_edge(rule1.id, rule2.id)                        
+                            self.rule_undirected_graph.add_edge(rule1.id, rule2.id)
+                    
+                    if rule1.output == rule2.output:
+                        self.rule_undirected_graph.add_edge(rule1.id, rule2.id)
+                        
                     #directed
                     if rule1.output in rule2.inputs:
                         self.rule_directed_graph.add_edge(rule1.id, rule2.id)
