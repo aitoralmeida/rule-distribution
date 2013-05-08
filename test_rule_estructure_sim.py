@@ -172,31 +172,65 @@ class TestRuleEstructureSim(unittest.TestCase):
         self.assertEquals(node_B_stage_2.sources[0].id, node_A_stage_2.id)
         self.assertEquals(node_B_stage_2.targets[0].id, node_A_stage_2.id)   
 
-    def test_create_graph_1(self):     
+    def test_create_node_graph_1(self):     
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 0, 1, False)
         
-        self.assertEquals(2+2+2, len(sim.graph.nodes))
-        self.assertEquals(4, len(sim.graph.edges))
+        self.assertEquals(2+2+2, len(sim.node_graph.nodes))
+        self.assertEquals(4, len(sim.node_graph.edges))
         
-    def test_create_graph_2(self):     
+    def test_create_node_graph_2(self):     
         sim = RuleStructureSim()
         sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)
                 
         nodes_edges = set()
         nodes_nodes = set()
         
-        for e in sim.graph.edges:
+        for e in sim.node_graph.edges:
             nodes_edges.add(e.id_from)
             nodes_edges.add(e.id_to)
                 
-        for n in sim.graph.nodes:
-            nodes_nodes.add(sim.graph.nodes[n].id)
+        for n in sim.node_graph.nodes:
+            nodes_nodes.add(sim.node_graph.nodes[n].id)
 
         for e in nodes_edges:
             self.assertTrue(e in nodes_nodes)
-               
+            
+    def test_create_rules1(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 1, False)
         
+        self.assertEqual(4, len(sim.rules))
+        
+    def test_create_rules2(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 0, 0, False)
+        
+        self.assertEqual(0, len(sim.rules))
+        
+    def test_create_rules3(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 1, 0, False)
+        
+        self.assertEqual(4, len(sim.rules))
+        
+    def test_create_rules4(self):
+        sim = RuleStructureSim()
+        sim.create_simulation([2,2,2], 1, 1, False)
+        
+        self.assertEqual(4, len(sim.rules))
+               
+#    def test_create_rule_graph_1(self):     
+#        sim = RuleStructureSim()
+#        sim.create_simulation([2,2,2], 0, 1, False)
+#        
+#        self.assertEquals(4, len(sim.rule_directed_graph.nodes))
+#        self.assertEquals(0, len(sim.rule_directed_graph.edges))
+#        
+#        self.assertEquals(4, len(sim.rule_undirected_graph.nodes))
+#        self.assertEquals(0, len(sim.rule_undirected_graph.edges))
+    
+    
     def test_check_next_stage_true(self):     
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 1, 0)    
@@ -240,14 +274,16 @@ class TestRuleEstructureSim(unittest.TestCase):
     def test_export_gml(self):
         sim = RuleStructureSim()
         sim.create_simulation([1, 1], 1, 0)        
-        sim.export_gml('./test.gml')
+        sim.export_gml('./test')
 
         g = Graph()
-        g.import_graph_gml('./test.gml')
+        g.import_graph_gml('./test_node_directed.gml')
         self.assertEquals(2, len(g.nodes))
         self.assertEquals(1, len(g.edges))
         
-        os.remove('./test.gml')
+        os.remove('./test_node_directed.gml')
+        os.remove('./test_rule_directed.gml')
+        os.remove('./test_rule_undirected.gml')
         
     def test_prune_non_consecuential_1(self):
         sim = RuleStructureSim()
