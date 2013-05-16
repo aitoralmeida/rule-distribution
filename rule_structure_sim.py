@@ -191,6 +191,11 @@ class RuleStructureSim:
         self.node_graph.export_graph_gml(filename + '_node_directed.gml')
         self.rule_directed_graph.export_graph_gml(filename + '_rule_directed.gml')
         self.rule_undirected_graph.export_graph_gml(filename + '_rule_undirected.gml')
+        
+    def export_edgelist(self, filename):
+        if self.verbose:
+            print 'Exporting to ncol: ' + filename           
+        self.rule_directed_graph.export_graph_edgelist_ncol(filename + '_rule_directed.csv')
     
 
 class Rule:   
@@ -208,7 +213,8 @@ class Node:
         
 if __name__ == "__main__":
     sim = RuleStructureSim(True)
-    sim.create_simulation([300, 100, 75, 10], 0.05, 0.001, True)    
+    sim.create_simulation([500, 300, 100, 10], 0.05, 0.001, True)    
     sim.export_gml('./result')
+    sim.export_edgelist('./test')
         
         
