@@ -10,14 +10,14 @@ from community_creator import CommunityCreator
 
 class TestRuleEstructureSim(unittest.TestCase):
     
-#    def test_import_gml(self):
-#        c = CommunityCreator(True)
-#        c.import_edgelist('./testfiles/test.csv')
-#        self.assertEquals(323, len(c.G.nodes()))
-#        self.assertEquals(836, len(c.G.edges()))
-#        
+    def test_import_gml(self):
+        c = CommunityCreator()
+        c.import_edgelist('./testfiles/test.csv')
+        self.assertEquals(323, len(c.G.nodes()))
+        self.assertEquals(836, len(c.G.edges()))
+        
     def test_find_cliques(self):
-        c = CommunityCreator(True)
+        c = CommunityCreator()
         c.import_edgelist('./testfiles/test.csv')
         res = c.find_cliques()
         self.assertEquals(766, res)
@@ -66,13 +66,17 @@ class TestRuleEstructureSim(unittest.TestCase):
         result = c.find_common_subsets(groups7)
         self.assertEquals(result, groups7_results)
         
+    def test_find_k_cliques(self):
+        c = CommunityCreator()
+        c.import_edgelist('./testfiles/test.csv')
+        res = c.find_k_cliques(3)
+        self.assertEquals(13, res)
         
-#        
-#    def test_find_k_cliques(self):
-#        c = CommunityCreator(True)
-#        c.import_edgelist('./testfiles/test.csv')
-#        res = c.find_k_cliques(3)
-#        self.assertEquals(766, res)
+    def test_find_k_cores(self):
+        c = CommunityCreator()
+        c.import_edgelist('./testfiles/test.csv')
+        res = c.find_k_cores(10)
+        self.assertEquals(3, res)
         
 
 if __name__ == '__main__':
