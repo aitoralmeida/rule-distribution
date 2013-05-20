@@ -81,7 +81,8 @@ class RuleStructureSim:
             for node_id in node_ids:
                 node = self.nodes[node_id]
                 if len(node.sources) > 0:
-                    rule_id = 'rule' + str(stage) + '-' + str(time.time()) + str(random.random())
+                    rule_id = 'rule' + str(stage) + str(0011) + str(time.time()) + str(random.random())
+                    rule_id = rule_id.replace('.', '')
                     self.rules[rule_id] = Rule(rule_id, [n.id for n in node.sources], node_id)
             
     def _prune_non_consecuential(self):
@@ -214,7 +215,8 @@ class Node:
         self.targets = []
         self.sources = []
         self.stage = stage
-        self.id = 'stage-' + str(stage) + '-' + str(time.time()) + str(random.random())
+        self.id = 'stage' + str(stage) + str(0011) + str(time.time()) + str(random.random())
+        self.id = self.id.replace('.', '')
         
 if __name__ == "__main__":
     sim = RuleStructureSim(True)
