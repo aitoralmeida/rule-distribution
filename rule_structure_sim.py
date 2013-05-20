@@ -81,7 +81,7 @@ class RuleStructureSim:
             for node_id in node_ids:
                 node = self.nodes[node_id]
                 if len(node.sources) > 0:
-                    rule_id = 'rule' + str(stage) + str(0011) + str(time.time()) + str(random.random())
+                    rule_id = 'rule' + str(stage) + 'stage' + str(time.time()) + str(random.random())
                     rule_id = rule_id.replace('.', '')
                     self.rules[rule_id] = Rule(rule_id, [n.id for n in node.sources], node_id)
             
