@@ -14,7 +14,7 @@ class TestRuleEstructureSim(unittest.TestCase):
     
     def test_create_concepts(self):
         sim = RuleStructureSim()
-        sim.create_concepts([5,3,2])
+        sim._create_concepts([5,3,2])
         
         self.assertEquals(len(sim.nodes), 5+3+2)        
         
@@ -235,25 +235,26 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 1, 0)    
         stage_0_id = sim.stage_nodes[0][0].id
-        self.assertTrue(sim.check_next_stage(sim.nodes[stage_0_id].id))
+        self.assertTrue(sim._check_next_stage(sim.nodes[stage_0_id].id))
     
     def test_check_next_stage_false(self):     
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 0, 1, False)  
         stage_0_id = sim.stage_nodes[0][0].id
-        self.assertFalse(sim.check_next_stage(sim.nodes[stage_0_id].id))
+        self.assertFalse(sim._check_next_stage(sim.nodes[stage_0_id].id))
     
     def test_disintegrate_node(self):
         sim = RuleStructureSim()
-        sim.create_simulation([1], 1, 1)  
+        sim.create_simulation([1, 1], 1, 1)  
+        
+        self.assertEquals(2, len(sim.nodes))
+        self.assertEquals(1, len(sim.stage_nodes[0]))
+        self.assertEquals(1, len(sim.stage_nodes[1]))
+        
+        sim._disintegrate_node(sim.nodes.values()[0].id)
         
         self.assertEquals(1, len(sim.nodes))
-        self.assertEquals(1, len(sim.stage_nodes[0]))
-        
-        sim.disintegrate_node(sim.nodes.values()[0].id)
-        
-        self.assertEquals(0, len(sim.nodes))
-        self.assertEquals(0, len(sim.stage_nodes[0]))
+
         
     def test_disintegrate_node_2(self):
         sim = RuleStructureSim()
@@ -264,7 +265,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         self.assertEquals(1, len(sim.stage_nodes[0]))
         self.assertEquals(1, len(sim.stage_nodes[1]))
         
-        sim.disintegrate_node(stage_0_id)
+        sim._disintegrate_node(stage_0_id)
         
         self.assertEquals(1, len(sim.nodes))
         self.assertEquals(0, len(sim.stage_nodes[0]))
@@ -292,7 +293,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         stage_0_nodes = sim.stage_nodes[0]    
         stage_1_nodes = sim.stage_nodes[1]    
         
-        sim.prune_non_consecuential()
+        sim._prune_non_consecuential()
         
         for n in stage_0_nodes:
             self.assertFalse(n.id in sim.nodes.keys())
@@ -301,7 +302,7 @@ class TestRuleEstructureSim(unittest.TestCase):
 
         self.assertEquals(0, len(sim.stage_nodes[0]))
         self.assertEquals(0, len(sim.stage_nodes[1]))
-        self.assertEquals(1, len(sim.stage_nodes[2]))
+        self.assertEquals(0, len(sim.stage_nodes[2]))
         
     def test_prune_non_consecuential_2(self):
         sim = RuleStructureSim()
@@ -310,7 +311,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         stage_0_nodes = sim.stage_nodes[0]    
         stage_1_nodes = sim.stage_nodes[1]    
         
-        sim.prune_non_consecuential()
+        sim._prune_non_consecuential()
         
         for n in stage_0_nodes:
             self.assertFalse(n.id in sim.nodes.keys())
@@ -319,7 +320,7 @@ class TestRuleEstructureSim(unittest.TestCase):
 
         self.assertEquals(0, len(sim.stage_nodes[0]))
         self.assertEquals(0, len(sim.stage_nodes[1]))
-        self.assertEquals(2, len(sim.stage_nodes[2]))
+        self.assertEquals(0, len(sim.stage_nodes[2]))
         
     def test_prune_non_consecuential_3(self):
         sim = RuleStructureSim()
@@ -328,7 +329,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         stage_0_nodes = sim.stage_nodes[0]    
         stage_1_nodes = sim.stage_nodes[1]    
         
-        sim.prune_non_consecuential()
+        sim._prune_non_consecuential()
         
         for n in stage_0_nodes:
             self.assertFalse(n.id in sim.nodes.keys())
@@ -343,7 +344,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim = RuleStructureSim()
         sim.create_simulation([2,2,2], 1, 1, False)
         
-        sim.prune_non_consecuential()
+        sim._prune_non_consecuential()
         
         self.assertEquals(2, len(sim.stage_nodes[0]))
         self.assertEquals(2, len(sim.stage_nodes[1]))
@@ -354,7 +355,7 @@ class TestRuleEstructureSim(unittest.TestCase):
         sim = RuleStructureSim()
         sim.create_simulation([1000,500,20], 0.01, 0.1, False)
         
-        disintegrated = sim.prune_non_consecuential()
+        disintegrated = sim._prune_non_consecuential()
         
         for node_id in disintegrated:
             for node in sim.nodes.values():
