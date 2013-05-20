@@ -21,7 +21,7 @@ class RuleStructureSim:
         self.rule_directed_graph = Graph()
         self.rule_undirected_graph = Graph()
     
-    def create_simulation (self, stages = [3, 2, 1], prob_prev = 1, prob_same = 1, prune = True):
+    def create_simulation (self, stages = [3, 2, 1], prob_prev = 1, prob_same = 1, prune = True, max_outdegree = 4):
         if self.verbose:
             print '\n\n**********************************'
             print '******* Creating simulation ******'
@@ -41,13 +41,15 @@ class RuleStructureSim:
                 for node in stage_nodes:
                     for prev_node in prev_nodes:
                         if random.random() < prob_prev:
-                            self.nodes[node.id].sources.append(prev_node)
-                            self.nodes[prev_node.id].targets.append(node)
+                            if len(self.nodes[prev_node.id].targets) < max_outdegree:
+                                self.nodes[node.id].sources.append(prev_node)
+                                self.nodes[prev_node.id].targets.append(node)
                     for node2 in stage_nodes:
                         if node.id != node2.id:
                             if random.random() < prob_same:
-                                self.nodes[node.id].sources.append(node2)                           
-                                self.nodes[node2.id].targets.append(node)                   
+                                if len(self.nodes[node2.id].targets) < max_outdegree:
+                                    self.nodes[node.id].sources.append(node2)                           
+                                    self.nodes[node2.id].targets.append(node)                   
         if prune:
             while len(self._prune_non_consecuential()) > 0:
                 pass
@@ -174,7 +176,9 @@ class RuleStructureSim:
             self.rule_directed_graph.add_node(id = rule.id)
             self.rule_undirected_graph.add_node(id = rule.id)
             
-        for rule1 in self.rules.values():
+        for pos, rule1 in enumerate(self.rules.values()):
+            if self.verbose:
+                print 'Processing rule %s from %s' %(pos, len(self.rules.values()))
             for rule2 in self.rules.values():
                 if rule1.id != rule2.id:
                     #undirected
@@ -220,7 +224,7 @@ class Node:
         
 if __name__ == "__main__":
     sim = RuleStructureSim(True)
-    sim.create_simulation([500, 300, 100, 10], 0.05, 0.001, True)    
+    sim.create_simulation([1000, 400, 20], 0.05, 0.001, True)    
     sim.export_gml('./result')
     sim.export_edgelist('./test')
         
